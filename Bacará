@@ -1,0 +1,28 @@
+# EP - Design de Software
+# Equipe: Rafael Pascarelli Niccheri
+# Data: 29/09/2020
+
+import random
+import time
+import math
+class Jogador():                            #Cria jogador para conseguir implemantar as rehras avançadas
+    def __init__(self):
+        self.valor_aposta=0                 #qunatidade de fichas que o jogador aposta
+        self.escolha_aposta=0               #em quem o jogadpr aposta
+        self.cartas_jogador=[]              #cartas do jogador
+    
+    def aposta(self, valor, escolha):       #definir as apostas do jogador
+        self.valor_aposta=valor
+        self.escolha_aposta=escolha
+        
+    def adiciona_carta(self, carta):        #adiciona uma cata na mão do jogador
+        self.cartas_jogador.append(carta)
+        
+    def soma_cartas(self):
+        cartas={'A':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':0, 'J':0,'Q':0,'K':0}     #valores de cada carta
+        soma=0                              #soma dos cartas
+        for carta in self.cartas_jogador:   #verifica as cartas
+            soma+=cartas[carta]             #atualiza a soma
+        while soma >= 10:                   #verifica a soma
+            soma-=10
+        return soma
