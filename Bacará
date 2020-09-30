@@ -26,3 +26,21 @@ class Jogador():                            #Cria jogador para conseguir implema
         while soma >= 10:                   #verifica a soma
             soma-=10
         return soma
+
+class Baralho():                            #cria os baralhos
+    def __init__(self, num_baralho):
+        self.num_baralho=num_baralho        #quantos baralhos serao usados
+        self.numeros=['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'] * num_baralho            #cria as cartas
+        self.naips=['Espadas', 'Paus', 'Ouros', 'Copas'] * len(self.numeros)        #cria os naips
+        self.cartas_sorteadas=[]                        #cartas ja sorteadas
+    
+    def sorteia_carta(self):                                                    #sorteia cartas
+        numero_sorteado=random.choice(self.numeros)                             #sorteia o valor da carta
+        naip_sorteado=random.choice(self.naips)                                 #sorteia o naip da carta
+        carta_sorteada=[numero_sorteado, naip_sorteado]                         #cria a carta
+        if self.cartas_sorteadas.count(carta_sorteada) >= self.num_baralho:     #loop para verificar se a carta ainda esta no baralho
+            return self.sorteia_carta()                                         #caso a carta nao esteja mais no baralho sorteia uma carta nova
+        else:
+            self.cartas_sorteadas.append(carta_sorteada)                        #adiciona a carta sorteada nas cartas ja sorteadas
+            return carta_sorteada                                               #retorna a carta sorteada
+
