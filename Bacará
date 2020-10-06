@@ -4,13 +4,19 @@
 
 import random
 import time
-import math
+import math as mt
+import os
+
+FICHAS=100
+
 class Jogador():                            #Cria jogador para conseguir implemantar as rehras avançadas
-    def __init__(self):
+    def __init__(self, numero_chamada):
         self.valor_aposta=0                 #qunatidade de fichas que o jogador aposta
-        self.escolha_aposta=0               #em quem o jogadpr aposta
+        self.escolha_aposta=0               #em quem o jogadpr aposta (jigador=1, banca=2, empate=3)
         self.cartas_jogador=[]              #cartas do jogador
-    
+        self.fichas=FICHAS                  #numero de fichas do jogador
+        self.numero_chamada=numero_chamada  #numero que o jogador equivale
+        
     def aposta(self, valor, escolha):       #definir as apostas do jogador
         self.valor_aposta=valor
         self.escolha_aposta=escolha
@@ -26,7 +32,7 @@ class Jogador():                            #Cria jogador para conseguir implema
         while soma >= 10:                   #verifica a soma
             soma-=10
         return soma
-
+    
 class Baralho():                            #cria os baralhos
     def __init__(self, num_baralho):
         self.num_baralho=num_baralho        #quantos baralhos serao usados
@@ -42,5 +48,42 @@ class Baralho():                            #cria os baralhos
             return self.sorteia_carta()                                         #caso a carta nao esteja mais no baralho sorteia uma carta nova
         else:
             self.cartas_sorteadas.append(carta_sorteada)                        #adiciona a carta sorteada nas cartas ja sorteadas
-            return carta_sorteada                                               #retorna a carta sorteada
+            return carta_sorteada
+                                               #retorna a carta sorteada
+def limpa_tela():                              #limpa a tela
+    os.system('cls')
+    
+def cria_jogadores(numero_jogadores):          #cria jogador
+    jogadores=[]                               #lista de jogadpres
+    for i in range(0, numero_jogadores):       #loop para criar os njogadores
+        jogadores.append(Jogador(i+1))
+    return jogadores
 
+def escolher_aposta():                          #funcao para escolher em quem apostas
+    escolha_aposta=int(input("Em quem voce quer apostar? "))        #input para escolher em quem apostar
+    if escolha_aposta not in [1, 2, 3]:                             #loop para verificar se a escolha é valida
+        print ('Escolha invalida')
+        return escolher_aposta()
+    else:
+        return escolha_aposta
+
+def apostar_fichas(fichas):                                         #funcao para escolher a quantidade de fichas para apostas
+    fichas_apostadas=int(input("Quantois fichas quer apostar? "))   #input para escolher a quantidade de fichas para apostar
+    if fichas_apostadas > fichas:                                   #loop para verificar se a quantidade de fichas é valida
+        print ('Numero de fichas apostadas invalido')
+        return apostar_fichas()
+    else:
+        return fichas_apostadas
+    
+def fazer_apostas(jogadores):                                       #funcao para fazer as apostas
+    for jogador in jogadores:                                       #loop para todos os jogadores apostarem
+        limpa_tela()
+        print('Jogador', jogador.numero_chamada)
+        print('Voce tem', jogador.fichas, 'fichas disponiveis')
+        print('Apostas dispooniveis')
+        print('1 : Jogador')
+        print('2 : Banca')
+        print('3 : Empate')
+        escolha_aposta=escolher_aposta()
+        fichas_apostadas=apostar_fichas(jogador.fichas)
+        jogador.aposta(fichas_apostadas, escolha_aposta)
