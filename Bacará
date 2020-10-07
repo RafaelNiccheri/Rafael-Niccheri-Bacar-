@@ -1,6 +1,6 @@
 # EP - Design de Software
 # Equipe: Rafael Pascarelli Niccheri
-# Data: 29/09/2020
+# Data: 18/10/2020
 
 import random
 import time
@@ -87,3 +87,44 @@ def fazer_apostas(jogadores):                                       #funcao para
         escolha_aposta=escolher_aposta()
         fichas_apostadas=apostar_fichas(jogador.fichas)
         jogador.aposta(fichas_apostadas, escolha_aposta)
+
+def valor_carta(carta):                                         #varifica o valor da carta
+    cartas={'A':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':0, 'J':0,'Q':0,'K':0}
+    valor=carta[0]
+    return cartas[valor]
+
+def terceira_carta_banca(jogadores, banca, baralhos):           #define se a banca recebera uma terceira carta
+    if banca.soma_cartas() > 5:                                 #regras para a terceira carta da banca
+        return False
+    if len(jogadores[0].cartas_jogador) < 3 and banca.soma_cartas() < 6:    #regras para a terceira carta da banca
+        return True
+    if len(jogadores[0].cartas_jogador) == 3 and banca.soma_cartas() < 6:   #regras para a terceira carta da banca
+        tabela=[[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2], [0, 1, 2, 3]]
+        terceira_carta_jogador= jogadores[0].cartas_jogador[2]
+        if banca.soma_cartas() in tabela[terceira_carta_jogador]:
+            return True
+
+def distribui_cartas(jogadores, banca, baralhos):               #distribui as cartas para os jogadores e para a banca
+    carta1=baralhos.sorteia_carta()                             #sorteia a primeira carta dos jogadores
+    carta2=baralhos.sorteia_carta()                             #sorteia a segunda carta dos jogadores
+    for jogador in jogadores:
+        jogador.adiciona_carta(carta1)                          #entrega a primeira carta sorteada dos jogadores para eles
+        jogador.adiciona_carta(carta2)                          #entrega a segunda carta sorteada dos jogadores para eles
+    carta1=baralhos.sorteia_carta()                             #sorteia a primeira carta da banca
+    carta2=baralhos.sorteia_carta()                             #sorteia a segunda carta da banca
+    banca.adiciona_carta(carta1)                                #entrega a primeira carta sorteada da banca para ela
+    banca.adiciona_carta(carta2)                                #entrega a segunda carta sorteada da banca para ela
+    if jogadores[0].soma_cartas() < 6 and banca.soma_cartas() != 8 and banca.soma_cartas() != 9:    #verifica se os jogadores devem receber uma terceira carta
+        carta3=baralhos.sorteia_carta()                         #sortei a terceira carta dos jogadores se necessario
+        for jogador in jogadores:
+            jogador.adiciona_carta(carta3)                      #entrega a terceira carta dos jogadores para eles caso ela tenha sido sorteada
+    if terceira_carta_banca(jogadores, banca, baralhos) == True: #chama a funcao que verifica se a banca deve receber uma terceira carta
+        carta3=baralhos.sorteia_carta()                         #sorteia a terceira carta da banca se necessario
+        banca.adiciona_carta(carta3)                            #entrega a terceira carta da banca para ela caso ela tenha sido sorteada
+    
+def menu(jogadores, banca, baralhos):                           #funcao que diz as informacoes dos jogadores e da as opções de apostas
+    limpa_tela()
+    for jogador in jogadores:
+        print('O Jogador', jogador.numero_chamada, 'tem', jogador.fichas, 'fichas')
+    input('Pressione enter para começar as aposta')
+    fazer_apostas(jogadores)                                    #chama a funcao para fazer as apostas
